@@ -24,4 +24,4 @@ if (process.env.NODE_ENV === 'dev') {
     urlDB = 'mongodb+srv://PolarProjectDB:12112001lpse@cluster0.f3fik.mongodb.net/coffe';
 }
 
-process.env.NODE_ENV = urlDB;
+process.env.URLDB = urlDB;

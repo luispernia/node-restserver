@@ -5,7 +5,7 @@ const app = express();
 const moongose = require('mongoose'); // require mongoose
 
 let port = process.env.PORT;
-let urlDB = process.env.NODE_ENV;
+let urlDB = process.env.URLDB;
 
 var bodyParser = require('body-parser'); // To process the data from body
 
