@@ -5,7 +5,6 @@ const app = express();
 const moongose = require('mongoose'); // require mongoose
 
 let port = process.env.PORT;
-let urlDB = process.env.URLDB;
 
 var bodyParser = require('body-parser'); // To process the data from body
 
@@ -17,9 +16,10 @@ app.use(bodyParser.json()); // Middleware
 
 app.use(require('./routes/user')); // require for the routes of the app, GET, POST ETC
 
+console.log(process.env.URLDB, ' : URLDB');
 
 
-moongose.connect(urlDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, (err, res) => {
+moongose.connect(process.env.URLDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, (err, res) => {
     if (err) throw err;
     console.log('database online');
 });
