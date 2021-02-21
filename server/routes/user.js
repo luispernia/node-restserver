@@ -12,7 +12,7 @@ app.get('/user', (req, res) => { // Routes
     from = Number(from);
     limit = Number(limit);
 
-    User.find({ status: true }, 'name email img role status google') // Filter in all the databse, the second parameter is for show the values we want to show
+    User.find({}, 'name email img role status google') // Filter in all the databse, the second parameter is for show the values we want to show
         .skip(from) // From wich element of the database start
         .limit(limit) // Limit of articles to show in one page
         .exec((err, users) => { // Execute the commad (MongoDB)
@@ -22,7 +22,7 @@ app.get('/user', (req, res) => { // Routes
                     err
                 })
             }
-            User.count({ status: true }, (err, count) => { // Show the count registers
+            User.count({}, (err, count) => { // Show the count registers
                 res.json({
                     ok: true,
                     users,
