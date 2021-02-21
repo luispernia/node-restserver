@@ -15,13 +15,8 @@ app.use(bodyParser.json()); // Middleware
 
 app.use(require('./routes/user')); // require for the routes of the app, GET, POST ETC
 
-app.get('/', (req, res) => {
-    res.json({
-        env: process.env.URLDB
-    })
-})
 
-moongose.connect('mongodb+srv://PolarProjectDB:12112001lpse@cluster0.f3fik.mongodb.net/coffe', { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, (err, res) => {
+moongose.connect(process.env.URLDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, (err, res) => {
     if (err) throw err;
 
     console.log(`Database Ready`);
