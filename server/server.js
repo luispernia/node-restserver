@@ -13,8 +13,8 @@ app.use(bodyParser.urlencoded({ extended: false })); // Middleware
 // parse application/json
 app.use(bodyParser.json()); // Middleware
 
-app.use(require('./routes/user')); // require for the routes of the app, GET, POST ETC
-
+// Routes Global Configuration
+app.use(require('./routes/index'));
 
 moongose.connect(process.env.URLDB, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }, (err, res) => {
     if (err) throw err;

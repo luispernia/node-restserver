@@ -2,10 +2,12 @@ const express = require('express');
 const User = require('../models/user'); // Required the User Model with validations 
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
-const user = require('../models/user');
+
 const app = express();
 
-app.get('/user', (req, res) => { // Routes
+let { verifyToken, verifyRole } = require('../middlewares/authentication');
+
+app.get('/user', verifyToken, (req, res) => { // Routes
 
     let from = req.query.from || 0;
     let limit = req.query.limit || 5;
@@ -32,7 +34,7 @@ app.get('/user', (req, res) => { // Routes
         })
 })
 
-app.post('/user', (req, res) => {
+app.post('/user', [verifyToken, verifyRole], (req, res) => {
 
         let body = req.body; // Data from body (bodyParser)
         let user = new User({ // Params for the User Model
@@ -60,7 +62,7 @@ app.post('/user', (req, res) => {
     })
     // Can recieve multi-params in one 
 
-app.put('/user/:id', (req, res) => {
+app.put('/user/:id', [verifyToken, verifyRole], (req, res) => {
     // params value in URL
     let id = req.params.id;
     let body = _.pick(req.body, ['name', 'email', 'img', 'role', 'status']);
@@ -82,10 +84,11 @@ app.put('/user/:id', (req, res) => {
 
 })
 
-app.delete('/user/:id', (req, res) => {
+app.delete('/user/:id', [verifyToken, verifyRole], (req, res) => {
 
     let id = req.params.id;
     let state = { status: false }
+
 
     User.findByIdAndUpdate(id, state, { new: true }, (err, userDB) => {
         if (err) {

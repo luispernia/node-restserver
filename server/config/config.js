@@ -13,6 +13,16 @@ process.env.PORT = process.env.PORT || 8080;
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev'; // Default as "production"
 
 // =================
+// Token Expired
+// =================
+process.env.TOKEN_EXP = 60 * 60 * 24 * 30;
+
+// =================
+// Seed Authentication
+// =================
+process.env.TOKEN_SEED = process.env.TOKEN_SEED || 'this-is-the-seed-dev';
+
+// =================
 // Database URI
 // =================
 
