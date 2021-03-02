@@ -1,120 +1,122 @@
-const express = require('express');
-const User = require('../models/user'); // Required the User Model with validations 
-const bcrypt = require('bcrypt');
-const _ = require('underscore');
+const express = require("express");
+const User = require("../models/user"); // Required the User Model with validations
+const bcrypt = require("bcrypt");
+const _ = require("underscore");
 
 const app = express();
 
-let { verifyToken, verifyRole } = require('../middlewares/authentication');
+let { verifyToken, verifyRole } = require("../middlewares/authentication");
 
-app.get('/user', verifyToken, (req, res) => { // Routes
+app.get("/user", verifyToken, (req, res) => {
+  // Routes
 
-    let from = req.query.from || 0;
-    let limit = req.query.limit || 5;
-    from = Number(from);
-    limit = Number(limit);
+  let from = req.query.from || 0;
+  let limit = req.query.limit || 5;
+  from = Number(from);
+  limit = Number(limit);
 
-    User.find({ status: true }, 'name email img role status google') // Filter in all the databse, the second parameter is for show the values we want to show
-        .skip(from) // From wich element of the database start
-        .limit(limit) // Limit of articles to show in one page
-        .exec((err, users) => { // Execute the commad (MongoDB)
-            if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    err
-                })
-            }
-            User.count({ status: true }, (err, count) => { // Show the count registers
-                res.json({
-                    ok: true,
-                    users,
-                    count
-                })
-            })
-        })
-})
-
-app.post('/user', [verifyToken, verifyRole], (req, res) => {
-
-        let body = req.body; // Data from body (bodyParser)
-        let user = new User({ // Params for the User Model
-            name: body.name,
-            email: body.email,
-            password: bcrypt.hashSync(body.password, 10),
-            role: body.role
+  User.find({ status: true }, "name email img role status google") // Filter in all the databse, the second parameter is for show the values we want to show
+    .skip(from) // From wich element of the database start
+    .limit(limit) // Limit of articles to show in one page
+    .exec((err, users) => {
+      // Execute the commad (MongoDB)
+      if (err) {
+        return res.status(400).json({
+          ok: false,
+          err,
         });
-
-        user.save((err, userDB) => {
-            if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    err
-                })
-            }
-
-            res.json({
-                ok: true,
-                user: userDB
-            })
-
-
-        })
-    })
-    // Can recieve multi-params in one 
-
-app.put('/user/:id', [verifyToken, verifyRole], (req, res) => {
-    // params value in URL
-    let id = req.params.id;
-    let body = _.pick(req.body, ['name', 'email', 'img', 'role', 'status']);
-
-    User.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' }, (err, userDB) => {
-
-        if (err) {
-            return res.status(400).json({
-                ok: false,
-                err
-            })
-        }
-
+      }
+      User.count({ status: true }, (err, count) => {
+        // Show the count registers
         res.json({
-            ok: true,
-            user: userDB
-        })
-    })
+          ok: true,
+          users,
+          count,
+        });
+      });
+    });
+});
 
-})
+app.post("/user", [verifyToken, verifyRole], (req, res) => {
+  let body = req.body; // Data from body (bodyParser)
+  let user = new User({
+    // Params for the User Model
+    name: body.name,
+    email: body.email,
+    password: bcrypt.hashSync(body.password, 10),
+    role: body.role,
+  });
 
-app.delete('/user/:id', [verifyToken, verifyRole], (req, res) => {
+  user.save((err, userDB) => {
+    if (err) {
+      return res.status(400).json({
+        ok: false,
+        err,
+      });
+    }
 
-    let id = req.params.id;
-    let state = { status: false }
+    res.json({
+      ok: true,
+      user: userDB,
+    });
+  });
+});
+// Can recieve multi-params in one
 
+app.put("/user/:id", [verifyToken, verifyRole], (req, res) => {
+  // params value in URL
+  let id = req.params.id;
+  let body = _.pick(req.body, ["name", "email", "img", "role", "status"]);
 
-    User.findByIdAndUpdate(id, state, { new: true }, (err, userDB) => {
-        if (err) {
-            return res.status(400).json({
-                ok: false,
-                err
-            })
-        }
+  User.findByIdAndUpdate(
+    id,
+    body,
+    { new: true, runValidators: true, context: "query" },
+    (err, userDB) => {
+      if (err) {
+        return res.status(400).json({
+          ok: false,
+          err,
+        });
+      }
 
-        if (!userDB) {
-            res.status(400).json({
-                ok: false,
-                error: {
-                    message: 'User not found'
-                }
-            })
-        }
+      res.json({
+        ok: true,
+        user: userDB,
+      });
+    }
+  );
+});
 
-        res.json({
-            ok: true,
-            user: userDB
-        })
-    })
+app.delete("/user/:id", [verifyToken, verifyRole], (req, res) => {
+  let id = req.params.id;
+  let state = { status: false };
 
-    /* // Physical Deleting
-        User.findByIdAndRemove(id, (err, userDeleted) => {
+  User.findByIdAndUpdate(id, state, { new: true }, (err, userDB) => {
+    if (err) {
+      return res.status(400).json({
+        ok: false,
+        err,
+      });
+    }
+
+    if (!userDB) {
+      res.status(400).json({
+        ok: false,
+        error: {
+          message: "User not found",
+        },
+      });
+    }
+
+    res.json({
+      ok: true,
+      user: userDB,
+    });
+  });
+
+  /* // Physical Deletingr.findByIdAndRemove(id, (err,
+        Use userDeleted) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
@@ -136,6 +138,6 @@ app.delete('/user/:id', [verifyToken, verifyRole], (req, res) => {
             })
         })
     */
-})
+});
 
 module.exports = app;
