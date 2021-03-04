@@ -38,7 +38,26 @@ let verifyRole = (req, res, next) => {
   next();
 };
 
+let verifyTokenImg = (req, res, next) => {
+  let token = req.query.token;
+  jwt.verify(token, process.env.TOKEN_SEED, (err, decoded) => {
+    // Verify the token, token, seed, decoded
+    if (err) {
+      return res.status(401).json({
+        ok: false,
+        err: {
+          message: "Not Valid Token",
+        },
+      });
+    }
+
+    req.user = decoded.user;
+    next(); // continue with the execution of the code in a specific route
+  });
+};
+
 module.exports = {
   verifyToken,
   verifyRole,
+  verifyTokenImg,
 };

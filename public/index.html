@@ -7,11 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Sign-In</title>
     <script src="https://apis.google.com/js/platform.js" asyncs defer></script>
-    <meta name="google-signin-client_id" content="1027404860731-94fdhle3qvr2qipn02g8rbn57u5ej7bj.apps.googleusercontent.com">
+    <meta name="google-signin-client_id"
+        content="1027404860731-94fdhle3qvr2qipn02g8rbn57u5ej7bj.apps.googleusercontent.com">
 </head>
 
-<body>
-    <div class="g-signin2" data-onsuccess="onSignIn"></div> 
+<body
+    style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
     <a href="#" onclick="signOut();">Sign out</a>
     <script>
         function signOut() {
@@ -21,6 +23,9 @@
             });
         }
     </script>
+    <h1>IMG With Token Encoded</h1>
+    <!-- <img src="http://localhost:8080/image/users/603176789f170d38ac22dbdd-846.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InJvbGUiOiJBRE1JTl9ST0xFIiwic3RhdHVzIjp0cnVlLCJnb29nbGUiOmZhbHNlLCJfaWQiOiI2MDMxNzY2NjlmMTcwZDM4YWMyMmRiZDkiLCJuYW1lIjoiVXNlcjEiLCJlbWFpbCI6InVzZXIxQGdtYWlsLmNvbSIsIl9fdiI6MCwiaW1nIjoiNjAzMTc2NjY5ZjE3MGQzOGFjMjJkYmQ5LTgwOS5qcGcifSwiaWF0IjoxNjE0ODcwMjc2LCJleHAiOjE2MTUwNDMwNzZ9.tgtugNuS28u3DF0HFVTTXUuT_6_RPQgxKSgiyr3JLno"
+        alt=""> -->
     <script>
         function onSignIn(googleUser) {
             var profile = googleUser.getBasicProfile();
@@ -31,7 +36,7 @@
             //   console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
         }
 
-        function onSignIn(googleUser) {  // Send the token to the backend
+        function onSignIn(googleUser) { // Send the token to the backend
             var id_token = googleUser.getAuthResponse().id_token;
 
             var xhr = new XMLHttpRequest();

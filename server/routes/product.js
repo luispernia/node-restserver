@@ -70,7 +70,7 @@ app.get("/products/:id", verifyToken, (req, res) => {
     });
 });
 
-app.get("/products/search/:term", (req, res) => {
+app.get("/products/search/:term", verifyToken, (req, res) => {
   let { term } = req.params;
   let regex = new RegExp(term, "i");
   Product.find({ name: regex, available: true })
@@ -82,6 +82,15 @@ app.get("/products/search/:term", (req, res) => {
           err,
         });
       }
+      if (!product) {
+        return res.status(400).json({
+          ok: false,
+          err: {
+            message: "Product Not Found",
+          },
+        });
+      }
+
       res.json({
         ok: true,
         product,
